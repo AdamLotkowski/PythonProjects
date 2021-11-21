@@ -23,48 +23,41 @@ def create_connection(db_file):
 def create_table(conn, create_table_sql):
     try:
         c = conn.cursor()
-        c.execute(create_table_sql)
+        c.executescript(create_table_sql)
         c.close()
     except Error as e:
         print(e)
 
 
-def insert_data(conn, sql_insert_query, records):
+def insert_data(conn, data, sql_insert_query, record1, record2, record3):
     try:
         c = conn.cursor()
-        c.executemany(sql_insert_query, records)
+        for i in data:
+            c.execute(sql_insert_query, [i[record1], i[record2], i[record3]])
         c.close()
-    except Error as e:      
+    except Error as e:
         print(e)
 
 
 def main():
     url = "https://api.nbp.pl/api/exchangerates/tables/a/?format=json"
     database = 'nbpCurrencyRates.db'
-
-    create_rates_table = """CREATE TABLE IF NOT EXISTS nbp_currency_rates (
-                                currency text NOT NULL,
-                                code text NOT NULL,
-                                rate real NOT NULL
-                                );"""
-
+    create_rates_table = """DROP TABLE IF EXISTS nbp_currency_rates;
+                            CREATE TABLE nbp_currency_rates (
+                                Currency text,
+                                Code text,
+                                Rate real);"""
     insert_rates_records = """INSERT INTO nbp_currency_rates (
                                 currency, code, rate) 
-                                VALUES (?, ?, ?
-                                );"""
+                                VALUES (?, ?, ?)"""
 
- #   currency_rates = load_data(url)
-  #  print(currency_rates[0]['rates'][0])
-
-    recordsToInsert = [('Jos', 'jos@gmail.com', 9500),
-                   ('Chris', 'chris@gmail.com', 7600),
-                   ('Jonny', 'jonny@gmail.com', 8400)]
-
+    currency_rates = load_data(url)
     conn = create_connection(database)
 
     if conn is not None:
-#        create_table(conn, create_rates_table)
-        insert_data(conn, insert_rates_records, recordsToInsert)
+        create_table(conn, create_rates_table)
+        insert_data(conn, currency_rates[0]['rates'], insert_rates_records,
+                    'currency', 'code', 'mid')
         conn.commit()
     else:
         print("Error! cannot create the database connection.")
@@ -72,22 +65,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-##      import currency rates from NBP in JSON file
-##      from urllib.request import urlopen
-##      import json
-##
-##      url = "https://api.nbp.pl/api/exchangerates/tables/a/?format=json"
-##      response = urlopen(url)
-##      currencyRates = json.loads(response.read())
-##
-##      print(currencyRates[0]['rates'][0])
-##
-##
-##      # import pprint                       # to erase
-##      # pprint.pprint(currencyRates)            # to erase
-##
-##
-##      # conn.close()
-##
