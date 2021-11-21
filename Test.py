@@ -60,7 +60,7 @@ def main():
                     'currency', 'code', 'mid')
         conn.commit()
     else:
-        print("Error! cannot create the database connection.")
+        print("Error! Cannot create the database connection.")
 
 
 if __name__ == '__main__':
