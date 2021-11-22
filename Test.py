@@ -52,6 +52,7 @@ def main():
                                 VALUES (?, ?, ?)"""
 
     currency_rates = load_data(url)
+    print(currency_rates)
     conn = create_connection(database)
 
     if conn is not None:
