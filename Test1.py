@@ -46,12 +46,12 @@ def insert_data(conn, data, sql_insert_query, record1, record2, record3):
         print(e)
 
 
-def main():
+def main(from_date = (2021, 9, 18)):                             # data download start date
 
     database = 'nbpCurrencyRates.db'                             # sqlite3 database file
     conn = create_connection(database)                           # connecting with database
 
-    from_date = (2021, 9, 18)                                    # data download start date
+
     print(from_date)
 
     dif = date.today() - date(*from_date)                        # difference between start date to today date
@@ -87,4 +87,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main((2021, 11,18))
